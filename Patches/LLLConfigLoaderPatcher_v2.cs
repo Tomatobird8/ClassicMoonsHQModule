@@ -1,0 +1,32 @@
+﻿using LethalLevelLoader.Tools;
+using HarmonyLib;
+using System.Collections.Generic;
+using LethalLevelLoader;
+
+namespace ClassicMoonsHQModule.Patches
+{
+    [HarmonyPatch]
+    internal class LLLConfigLoaderPatcher_v2
+    {
+        static readonly List<string> vanillaLevels = ["Adamance", "Offense", "Assurance", "Experimentation", "Liquidation", "Embrion", "Vow", "March", "Artifice", "Dine", "Titan", "Rend"];
+
+        [HarmonyPatch(typeof(ExtendedDungeonConfig), "BindConfigs")]
+        [HarmonyPrefix]
+        public static void PatchDungeon(ref ExtendedDungeonFlow extendedDungeonFlow)
+        {
+            extendedDungeonFlow.GenerateAutomaticConfigurationOptions = false;
+        }
+
+        [HarmonyPatch(typeof(ExtendedLevelConfig), "BindConfigs")]
+        [HarmonyPrefix]
+        public static void PatchMoon(ref ExtendedLevel extendedLevel)
+        {
+            extendedLevel.GenerateAutomaticConfigurationOptions = false;
+            if (vanillaLevels.Contains(extendedLevel.NumberlessPlanetName))
+            {
+                extendedLevel.IsRouteLocked = true;
+                extendedLevel.IsRouteHidden = true;
+            }
+        }
+    }
+}
