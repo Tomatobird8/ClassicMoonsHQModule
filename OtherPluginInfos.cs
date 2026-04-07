@@ -20,5 +20,10 @@ namespace ClassicMoonsHQModule
         public const string STREAMOVERLAYS_GUID = "com.github.zehsteam.StreamOverlays";
         public const string LOADSTONE_GUID = "com.adibtw.loadstone";
         public const string VLOG_GUID = "OreoM.VLog";
+        public const string BLURANCEFIX_GUID = "Tomatobird.BluranceTerrainFix";
+        public const string DERELICTFIX_GUID = "Tomatobird.DerelictFix";
+        public const string LERTZFIX_GUID = "Tomatobird.LertzFix";
+        public const string TANDRAUSFIX_GUID = "Tomatobird.TandrausFix";
+        public const string DERELICT_MOON_PLUGIN_GUID = "DerelictMoonPlugin";
     }
 }
