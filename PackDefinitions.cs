@@ -22,7 +22,7 @@ namespace ClassicMoonsHQModule
         {
             {OPI.LLL_GUID, "1.3.8" },
             {OPI.PATHFINDINGLAGFIX_GUID, "1.2.2" },
-            {OPI.STARLANCERAIFIX_GUID, "3.8.4" },
+            {OPI.STARLANCERAIFIX_GUID, "3.8.0" },
             {OPI.LETHALLIB_GUID, "0.16.2" },
             {OPI.LOADSTONE_GUID, "0.1.18" },
             {OPI.CULLFACTORY_GUID, "1.7.0" },
@@ -46,7 +46,7 @@ namespace ClassicMoonsHQModule
             {OPI.LLL_GUID, "1.4.11" },
             {OPI.PATHFINDINGLAGFIX_GUID, "2.2.4" },
             {OPI.PATHFINDINGLIB_GUID, "2.3.2" },
-            {OPI.STARLANCERAIFIX_GUID, "3.8.4" },
+            {OPI.STARLANCERAIFIX_GUID, "3.9.0" },
             {OPI.LETHALLIB_GUID, "1.0.1" },
             {OPI.LOADSTONE_GUID, "0.1.23" },
             {OPI.CULLFACTORY_GUID, "2.0.4" },
@@ -75,6 +75,17 @@ namespace ClassicMoonsHQModule
             {OPI.LETHALLIB_GUID, "1.1.1" },
             {OPI.LOADSTONE_GUID, "0.1.23" },
             {OPI.CULLFACTORY_GUID, "2.0.4" },
+            {OPI.DERELICT_MOON_PLUGIN_GUID, "1.2.1" }
+        };
+
+        internal static Dictionary<string, string> v81Mods = new Dictionary<string, string>
+        {
+            {OPI.LLL_GUID, "1.6.9" },
+            //{OPI.PATHFINDINGLAGFIX_GUID, "2.2.5" },
+            //{OPI.PATHFINDINGLIB_GUID, "2.4.1" },
+            {OPI.STARLANCERAIFIX_GUID, "3.12.0" },
+            {OPI.LETHALLIB_GUID, "1.2.0" },
+            {OPI.CULLFACTORY_GUID, "2.0.7" },
             {OPI.DERELICT_MOON_PLUGIN_GUID, "1.2.1" }
         };
     }

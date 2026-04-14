@@ -47,6 +47,11 @@ namespace ClassicMoonsHQModule.Patches
                 case 73:
                     invalidSessionReason += CheckModValidity(PackDefinition.v73Mods, true);
                     break;
+
+                case 81:
+                    invalidSessionReason += CheckModValidity(PackDefinition.v81Mods, true);
+                    break;
+
                 default:
                     invalidSessionReason += "Unsupported game version";
                     break;
