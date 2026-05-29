@@ -1,12 +1,33 @@
 ﻿using BepInEx;
 using HarmonyLib;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace ClassicMoonsHQModule.Patches
 {
     [HarmonyPatch(typeof(MenuManager))]
     internal class MenuManagerPatcher
     {
+        private static Action<MenuManager, string, string, bool>? MenuNotif3;
+        private static Action<MenuManager, string, string>? MenuNotif2;
+
+        static MenuManagerPatcher()
+        {
+            MethodInfo? method = AccessTools.Method(typeof(MenuManager), nameof(MenuManager.DisplayMenuNotification));
+            if (method != null)
+            {
+                if (method.GetParameters().Length == 3)
+                {
+                    MenuNotif3 = AccessTools.MethodDelegate<Action<MenuManager, string, string, bool>>(method);
+                }
+                else
+                {
+                    MenuNotif2 = AccessTools.MethodDelegate<Action<MenuManager, string, string>>(method);
+                }
+            }
+        }
+
         [HarmonyPatch("Start")]
         [HarmonyPrefix]
         internal static void Start_Prefix(MenuManager __instance)
@@ -71,7 +92,18 @@ namespace ClassicMoonsHQModule.Patches
             if (!invalidSessionReason.IsNullOrWhiteSpace())
             {
                 invalidSessionReason = invalidSessionReason.TrimEnd(',', ' ');
-                __instance.DisplayMenuNotification($"WARNING! Modpack misconfiguration: {invalidSessionReason}", "[ OK ]");
+                if (MenuNotif3 != null)
+                {
+                    MenuNotif3(__instance, $"WARNING! Modpack misconfiguration: {invalidSessionReason}", "[ OK ]", true);
+                }
+                else if (MenuNotif2 != null)
+                {
+                    MenuNotif2(__instance, $"WARNING! Modpack misconfiguration: {invalidSessionReason}", "[ OK ]");
+                }
+                else
+                {
+                    ClassicMoonsHQModule.Logger.LogError("Displaying menu notification failed.");
+                }
                 ClassicMoonsHQModule.Logger.LogWarning($"WARNING! Modpack misconfiguration: {invalidSessionReason}");
             }
         }

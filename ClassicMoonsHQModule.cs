@@ -5,7 +5,6 @@ using ClassicMoonsHQModule.Patches;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
-using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
