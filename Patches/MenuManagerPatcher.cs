@@ -1,9 +1,6 @@
 ﻿using BepInEx;
 using HarmonyLib;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Unity.IL2CPP.CompilerServices;
 
 namespace ClassicMoonsHQModule.Patches
 {
@@ -11,9 +8,13 @@ namespace ClassicMoonsHQModule.Patches
     internal class MenuManagerPatcher
     {
         [HarmonyPatch("Start")]
-        [HarmonyPostfix]
-        internal static void Start_Postfix(MenuManager __instance)
+        [HarmonyPrefix]
+        internal static void Start_Prefix(MenuManager __instance)
         {
+            if (__instance.isInitScene)
+            {
+                return;
+            }
             string invalidSessionReason = "";
 
             int verNum = GameNetworkManager.Instance.gameVersionNum;
