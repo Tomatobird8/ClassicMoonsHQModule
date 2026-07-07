@@ -52,11 +52,10 @@ namespace ClassicMoonsHQModule
                 {
                     Harmony.PatchAll(typeof(LLLConfigLoaderPatcher_v1));
                 }
-                if (pluginInfo.Metadata.Version == new Version(PackDefinition.v81Mods[OtherPluginInfos.LLL_GUID]))
+                if (pluginInfo.Metadata.Version < new Version(PackDefinition.v81Mods[OtherPluginInfos.LLL_GUID]))
                 {
-                    SceneManager.sceneLoaded += FixLevelGenerationRoot; // don't patch LLL v1.7.0 onwards
+                    Harmony.PatchAll(typeof(SoundManagerPatcher));
                 }
-                Harmony.PatchAll(typeof(SoundManagerPatcher)); // don't patch LLL v1.7.0 onwards
             }
 
             Logger.LogDebug("Finished patching!");
@@ -67,30 +66,6 @@ namespace ClassicMoonsHQModule
             if (scene.name == "TutorialMoonScene")
             {
                 EditVerdanceScene(scene);
-            }
-        }
-
-        internal static void FixLevelGenerationRoot(Scene scene, LoadSceneMode mode) // Temp fix for v81 (LLL v1.6.9)
-        {
-            GameObject? Systems = FindByName(scene.GetRootGameObjects(), "Systems");
-            if (Systems == null)
-            {
-                return;
-            }
-            Transform? LevelGeneration = Systems.transform.Find("LevelGeneration");
-            if (LevelGeneration == null)
-            {
-                return;
-            }
-            Transform? firstChild = LevelGeneration.GetChild(0);
-            if (firstChild == null)
-            {
-                return;
-            }
-            if (firstChild.name == "LevelGenerationRoot")
-            {
-                firstChild.SetAsLastSibling();
-                Logger.LogDebug("Reordered LevelGeneration child objects.");
             }
         }
 

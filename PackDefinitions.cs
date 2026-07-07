@@ -80,12 +80,12 @@ namespace ClassicMoonsHQModule
 
         internal static Dictionary<string, string> v81Mods = new Dictionary<string, string>
         {
-            {OPI.LLL_GUID, "1.6.9" },
+            {OPI.LLL_GUID, "1.7.8" },
             {OPI.PATHFINDINGLAGFIX_GUID, "2.4.2" },
             {OPI.PATHFINDINGLIB_GUID, "2.4.1" },
-            {OPI.STARLANCERAIFIX_GUID, "3.13.1" },
+            {OPI.STARLANCERAIFIX_GUID, "3.13.2" },
             {OPI.LETHALLIB_GUID, "1.2.0" },
-            {OPI.CULLFACTORY_GUID, "2.0.10" },
+            {OPI.CULLFACTORY_GUID, "2.0.11" },
             {OPI.DERELICT_MOON_PLUGIN_GUID, "1.2.1" }
         };
     }
