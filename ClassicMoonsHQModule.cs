@@ -8,77 +8,86 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace ClassicMoonsHQModule
+namespace ClassicMoonsHQModule;
+
+[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+public class ClassicMoonsHQModule : BaseUnityPlugin
 {
-    [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-    public class ClassicMoonsHQModule : BaseUnityPlugin
+    public static ClassicMoonsHQModule Instance { get; private set; } = null!;
+    internal new static ManualLogSource Logger { get; private set; } = null!;
+    internal static Harmony? Harmony { get; set; }
+
+    // Loaded plugins
+    internal static Dictionary<string, PluginInfo> pluginInfos = [];
+
+    private void Awake()
     {
-        public static ClassicMoonsHQModule Instance { get; private set; } = null!;
-        internal new static ManualLogSource Logger { get; private set; } = null!;
-        internal static Harmony? Harmony { get; set; }
+        Logger = base.Logger;
+        Instance = this;
 
-        // Loaded plugins
-        internal static Dictionary<string, PluginInfo> pluginInfos = [];
+        pluginInfos = Chainloader.PluginInfos;
 
-        private void Awake()
+        Patch();
+
+        SceneManager.sceneLoaded += OnSceneLoad;
+
+        Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
+    }
+
+    internal static void Patch()
+    {
+        Harmony ??= new Harmony(MyPluginInfo.PLUGIN_GUID);
+
+        Logger.LogDebug("Patching...");
+
+        Harmony.PatchAll(typeof(MenuManagerPatcher));
+
+        if (Chainloader.PluginInfos.TryGetValue(OtherPluginInfos.LLL_GUID, out PluginInfo pluginInfo))
         {
-            Logger = base.Logger;
-            Instance = this;
-
-            pluginInfos = Chainloader.PluginInfos;
-
-            Patch();
-
-            SceneManager.sceneLoaded += OnSceneLoad;
-
-            Logger.LogInfo($"{MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION} has loaded!");
-        }
-
-        internal static void Patch()
-        {
-            Harmony ??= new Harmony(MyPluginInfo.PLUGIN_GUID);
-
-            Logger.LogDebug("Patching...");
-
-            Harmony.PatchAll(typeof(MenuManagerPatcher));
-
-            if (Chainloader.PluginInfos.TryGetValue(OtherPluginInfos.LLL_GUID, out PluginInfo pluginInfo))
+            if (pluginInfo.Metadata.Version >= new Version(PackDefinition.v73Mods[OtherPluginInfos.LLL_GUID]))
             {
-                if (pluginInfo.Metadata.Version >= new Version(PackDefinition.v73Mods[OtherPluginInfos.LLL_GUID]))
-                {
-                    Harmony.PatchAll(typeof(LLLConfigLoaderPatcher_v2));
-                }
-                else
-                {
-                    Harmony.PatchAll(typeof(LLLConfigLoaderPatcher_v1));
-                }
-                if (pluginInfo.Metadata.Version < new Version(PackDefinition.v81Mods[OtherPluginInfos.LLL_GUID]))
-                {
-                    Harmony.PatchAll(typeof(SoundManagerPatcher));
-                }
+                Harmony.PatchAll(typeof(LLLConfigLoaderPatcher_v2));
             }
-
-            Logger.LogDebug("Finished patching!");
-        }
-
-        internal static void OnSceneLoad(Scene scene, LoadSceneMode mode)
-        {
-            if (scene.name == "TutorialMoonScene")
+            else
             {
-                EditVerdanceScene(scene);
+                Harmony.PatchAll(typeof(LLLConfigLoaderPatcher_v1));
+            }
+            if (pluginInfo.Metadata.Version < new Version(PackDefinition.v81Mods[OtherPluginInfos.LLL_GUID]))
+            {
+                Harmony.PatchAll(typeof(SoundManagerPatcher));
             }
         }
 
-        internal static GameObject FindByName(GameObject[] gameObjects, string name)
-        {
-            return Array.Find(gameObjects, obj => obj.name == name);
-        }
+        Logger.LogDebug("Finished patching!");
+    }
 
-        internal static void EditVerdanceScene(Scene scene)
+    internal static void OnSceneLoad(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "TutorialMoonScene")
         {
-            Logger.LogInfo("Editing Verdance Scene.");
-            Transform dropshipSpawnSpot = scene.GetRootGameObjects()[2].transform.Find("ItemShipAnimContainer/ItemShip/ItemSpawnPositions/DropshipSpawn (1)");
-            dropshipSpawnSpot.position += new Vector3(0f, 0.15f, 0f);
+            EditVerdanceScene(scene);
         }
+    }
+
+    internal static GameObject FindByName(GameObject[] gameObjects, string name)
+    {
+        return Array.Find(gameObjects, obj => obj.name == name);
+    }
+
+    internal static void EditVerdanceScene(Scene scene)
+    {
+        Logger.LogInfo("Editing Verdance Scene.");
+        Transform dropshipSpawnSpot = scene.GetRootGameObjects()[2].transform.Find("ItemShipAnimContainer/ItemShip/ItemSpawnPositions/DropshipSpawn (1)");
+        dropshipSpawnSpot.position += new Vector3(0f, 0.15f, 0f);
+    }
+    internal enum Versions
+    {
+        v56 = 56,
+        v62 = 62,
+        v64 = 64,
+        v69 = 69,
+        v72 = 72,
+        v73 = 73,
+        v81 = 81
     }
 }

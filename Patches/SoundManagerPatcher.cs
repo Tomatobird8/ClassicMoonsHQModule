@@ -3,24 +3,23 @@
 using HarmonyLib;
 using System.Collections;
 
-namespace ClassicMoonsHQModule.Patches
+namespace ClassicMoonsHQModule.Patches;
+
+[HarmonyPatch(typeof(SoundManager))]
+internal class SoundManagerPatcher
 {
-    [HarmonyPatch(typeof(SoundManager))]
-    internal class SoundManagerPatcher
+    [HarmonyPatch(nameof(SoundManager.ResetValues))]
+    [HarmonyPostfix]
+    internal static void ResetValues_Postfix(SoundManager __instance)
     {
-        [HarmonyPatch(nameof(SoundManager.ResetValues))]
-        [HarmonyPostfix]
-        internal static void ResetValues_Postfix(SoundManager __instance)
-        {
-            ClassicMoonsHQModule.Logger.LogInfo("Attempting to fix chorus effect bug in SoundManager.ResetValues.");
-            __instance.StartCoroutine(FixChorusEffect(__instance));
-        }
-        private static IEnumerator FixChorusEffect(SoundManager soundManager)
-        {
-            yield return null;
-            soundManager.SetDiageticMixerSnapshot(4, 1000.0f);
-            yield return null;
-            soundManager.SetDiageticMixerSnapshot(0, 1.0f);
-        }
+        ClassicMoonsHQModule.Logger.LogInfo("Attempting to fix chorus effect bug in SoundManager.ResetValues.");
+        __instance.StartCoroutine(FixChorusEffect(__instance));
+    }
+    private static IEnumerator FixChorusEffect(SoundManager soundManager)
+    {
+        yield return null;
+        soundManager.SetDiageticMixerSnapshot(4, 1000.0f);
+        yield return null;
+        soundManager.SetDiageticMixerSnapshot(0, 1.0f);
     }
 }
