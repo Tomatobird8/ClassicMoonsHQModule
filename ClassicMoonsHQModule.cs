@@ -114,7 +114,7 @@ public class ClassicMoonsHQModule : BaseUnityPlugin
         new PackDefinition(
             versionRange: [Versions.v81],
             requiredMods: new Dictionary<string, Version>{
-                {OPI.LLL_GUID, new Version("1.7.8") },
+                {OPI.LLL_GUID, new Version("1.7.13") },
                 {OPI.PATHFINDINGLAGFIX_GUID, new Version("2.4.2") },
                 {OPI.PATHFINDINGLIB_GUID, new Version("2.4.1") },
                 {OPI.STARLANCERAIFIX_GUID, new Version("3.13.2") },
@@ -126,7 +126,7 @@ public class ClassicMoonsHQModule : BaseUnityPlugin
             patches: [
                 typeof(LLLConfigLoaderPatcher_v2)
                 ]
-            ),
+            )
         ];
 
     // Loaded plugins
