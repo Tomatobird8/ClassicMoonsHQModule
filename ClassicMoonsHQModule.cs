@@ -7,15 +7,127 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using OPI = ClassicMoonsHQModule.OtherPluginInfos;
 
 namespace ClassicMoonsHQModule;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+[BepInDependency(OPI.LLL_GUID)]
 public class ClassicMoonsHQModule : BaseUnityPlugin
 {
     public static ClassicMoonsHQModule Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
     internal static Harmony? Harmony { get; set; }
+
+    internal readonly static List<PackDefinition> packDefinitions =
+        [
+        new PackDefinition(
+            versionRange: [Versions.v56],
+            requiredMods: new Dictionary<string, Version>{
+                {OPI.LLL_GUID, new Version("1.3.8") },
+                {OPI.PATHFINDINGLAGFIX_GUID, new Version("1.2.2") },
+                {OPI.STARLANCERAIFIX_GUID, new Version("3.8.0") },
+                {OPI.LETHALLIB_GUID, new Version("0.16.2") },
+                {OPI.LOADSTONE_GUID, new Version("0.1.18") },
+                {OPI.CULLFACTORY_GUID, new Version("1.7.0") },
+                {OPI.DERELICT_MOON_PLUGIN_GUID, new Version("1.0.0") } },
+            optionalMods: [],
+            disallowedMods: [],
+            patches: [
+                typeof(LLLConfigLoaderPatcher_v1),
+                typeof(SoundManagerPatcher)
+                ]
+            ),
+        new PackDefinition(
+            versionRange: [Versions.v62],
+            requiredMods: new Dictionary<string, Version>{
+                {OPI.LLL_GUID, new Version("1.3.13") },
+                {OPI.PATHFINDINGLAGFIX_GUID, new Version("2.1.1") },
+                {OPI.PATHFINDINGLIB_GUID, new Version("0.0.14") },
+                {OPI.STARLANCERAIFIX_GUID, new Version("3.8.4") },
+                {OPI.LETHALLIB_GUID, new Version("1.0.1") },
+                {OPI.LOADSTONE_GUID, new Version("0.1.23") },
+                {OPI.CULLFACTORY_GUID, new Version("2.0.4") },
+                {OPI.DERELICT_MOON_PLUGIN_GUID, new Version("1.2.0") } },
+            optionalMods: [],
+            disallowedMods: [],
+            patches: [
+                typeof(LLLConfigLoaderPatcher_v1),
+                typeof(SoundManagerPatcher)
+                ]
+            ),
+        new PackDefinition(
+            versionRange: [Versions.v64, Versions.v69],
+            requiredMods: new Dictionary<string, Version>{
+                {OPI.LLL_GUID, new Version("1.4.11") },
+                {OPI.PATHFINDINGLAGFIX_GUID, new Version("2.2.4") },
+                {OPI.PATHFINDINGLIB_GUID, new Version("2.3.2") },
+                {OPI.STARLANCERAIFIX_GUID, new Version("3.9.0") },
+                {OPI.LETHALLIB_GUID, new Version("1.0.1") },
+                {OPI.LOADSTONE_GUID, new Version("0.1.23") },
+                {OPI.CULLFACTORY_GUID, new Version("2.0.4") },
+                {OPI.DERELICT_MOON_PLUGIN_GUID, new Version("1.2.0") } },
+            optionalMods: [],
+            disallowedMods: [],
+            patches: [
+                typeof(LLLConfigLoaderPatcher_v1),
+                typeof(SoundManagerPatcher)
+                ]
+            ),
+        new PackDefinition(
+            versionRange: [Versions.v72],
+            requiredMods: new Dictionary<string, Version>{
+                {OPI.LLL_GUID, new Version("1.4.11") },
+                {OPI.PATHFINDINGLAGFIX_GUID, new Version("2.2.4") },
+                {OPI.PATHFINDINGLIB_GUID, new Version("2.3.2") },
+                {OPI.STARLANCERAIFIX_GUID, new Version("3.11.1") },
+                {OPI.LETHALLIB_GUID, new Version("1.1.1") },
+                {OPI.LOADSTONE_GUID, new Version("0.1.23") },
+                {OPI.CULLFACTORY_GUID, new Version("2.0.4") },
+                {OPI.DERELICTFIX_GUID, new Version("1.0.0") },
+                {OPI.DERELICT_MOON_PLUGIN_GUID, new Version("1.2.0") } },
+            optionalMods: [],
+            disallowedMods: [],
+            patches: [
+                typeof(LLLConfigLoaderPatcher_v1),
+                typeof(SoundManagerPatcher)
+                ]
+            ),
+        new PackDefinition(
+            versionRange: [Versions.v73],
+            requiredMods: new Dictionary<string, Version>{
+                {OPI.LLL_GUID, new Version("1.6.8") },
+                {OPI.PATHFINDINGLAGFIX_GUID, new Version("2.2.5") },
+                {OPI.PATHFINDINGLIB_GUID, new Version("2.4.1") },
+                {OPI.STARLANCERAIFIX_GUID, new Version("3.11.1") },
+                {OPI.LETHALLIB_GUID, new Version("1.1.1") },
+                {OPI.LOADSTONE_GUID, new Version("0.1.23") },
+                {OPI.CULLFACTORY_GUID, new Version("2.0.4") },
+                {OPI.DERELICT_MOON_PLUGIN_GUID, new Version("1.2.1") } },
+            optionalMods: [],
+            disallowedMods: [],
+            patches: [
+                typeof(LLLConfigLoaderPatcher_v2),
+                typeof(SoundManagerPatcher)
+                ]
+            ),
+        new PackDefinition(
+            versionRange: [Versions.v81],
+            requiredMods: new Dictionary<string, Version>{
+                {OPI.LLL_GUID, new Version("1.7.8") },
+                {OPI.PATHFINDINGLAGFIX_GUID, new Version("2.4.2") },
+                {OPI.PATHFINDINGLIB_GUID, new Version("2.4.1") },
+                {OPI.STARLANCERAIFIX_GUID, new Version("3.13.2") },
+                {OPI.LETHALLIB_GUID, new Version("1.2.0") },
+                {OPI.CULLFACTORY_GUID, new Version("2.0.11") },
+                {OPI.DERELICT_MOON_PLUGIN_GUID, new Version("1.2.1") } },
+            optionalMods: [],
+            disallowedMods: [],
+            patches: [
+                typeof(LLLConfigLoaderPatcher_v2)
+                ]
+            ),
+        ];
 
     // Loaded plugins
     internal static Dictionary<string, PluginInfo> pluginInfos = [];
@@ -42,23 +154,33 @@ public class ClassicMoonsHQModule : BaseUnityPlugin
 
         Harmony.PatchAll(typeof(MenuManagerPatcher));
 
-        if (Chainloader.PluginInfos.TryGetValue(OtherPluginInfos.LLL_GUID, out PluginInfo pluginInfo))
+        if (Chainloader.PluginInfos.TryGetValue(OPI.LLL_GUID, out PluginInfo lllInfo))
         {
-            if (pluginInfo.Metadata.Version >= new Version(PackDefinition.v73Mods[OtherPluginInfos.LLL_GUID]))
+            foreach (PackDefinition pack in packDefinitions)
             {
-                Harmony.PatchAll(typeof(LLLConfigLoaderPatcher_v2));
-            }
-            else
-            {
-                Harmony.PatchAll(typeof(LLLConfigLoaderPatcher_v1));
-            }
-            if (pluginInfo.Metadata.Version < new Version(PackDefinition.v81Mods[OtherPluginInfos.LLL_GUID]))
-            {
-                Harmony.PatchAll(typeof(SoundManagerPatcher));
+                if (lllInfo.Metadata.Version == pack.RequiredMods[OPI.LLL_GUID])
+                {
+                    PatchType(pack.Patches);
+                    break;
+                }
             }
         }
 
         Logger.LogDebug("Finished patching!");
+    }
+
+    internal static void PatchType(Type[] typeArray)
+    {
+        foreach (Type type in typeArray)
+        {
+            PatchType(type);
+        }
+    }
+
+    internal static void PatchType(Type type)
+    {
+        Logger.LogDebug($"Patching {type.Name}");
+        Harmony?.PatchAll(type);
     }
 
     internal static void OnSceneLoad(Scene scene, LoadSceneMode mode)

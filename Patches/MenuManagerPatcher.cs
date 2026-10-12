@@ -41,43 +41,31 @@ internal class MenuManagerPatcher
 
         int verNum = GameNetworkManager.Instance.gameVersionNum;
 
+        ClassicMoonsHQModule.Logger.LogInfo("Game version " + verNum);
+
         // Global required mods
         invalidSessionReason += CheckModValidity(PackDefinition.commonRequiredMods, true);
 
+        bool packFound = false;
+
         // Version specific required mods
-        switch (verNum)
+        foreach (PackDefinition pack in ClassicMoonsHQModule.packDefinitions)
         {
-            case 56:
-                invalidSessionReason += CheckModValidity(PackDefinition.v56Mods, true);
-                break;
+            foreach (ClassicMoonsHQModule.Versions version in pack.VersionRange)
+            {
+                if ((int)version == verNum)
+                {
+                    invalidSessionReason += CheckModValidity(pack.RequiredMods, true);
+                    invalidSessionReason += CheckForBannedMods(pack.DisallowedMods);
+                    packFound = true;
+                    break;
+                }
+            }
+        }
 
-            case 62:
-                invalidSessionReason += CheckModValidity(PackDefinition.v62Mods, true);
-                break;
-
-            case 64:
-                invalidSessionReason += CheckModValidity(PackDefinition.v69Mods, true);
-                break;
-
-            case 69:
-                invalidSessionReason += CheckModValidity(PackDefinition.v69Mods, true);
-                break;
-
-            case 72:
-                invalidSessionReason += CheckModValidity(PackDefinition.v72Mods, true);
-                break;
-
-            case 73:
-                invalidSessionReason += CheckModValidity(PackDefinition.v73Mods, true);
-                break;
-
-            case 81:
-                invalidSessionReason += CheckModValidity(PackDefinition.v81Mods, true);
-                break;
-
-            default:
-                invalidSessionReason += "Unsupported game version";
-                break;
+        if (!packFound)
+        {
+            invalidSessionReason += "Unsupported game version, ";
         }
 
         // Global optional mods
@@ -93,6 +81,7 @@ internal class MenuManagerPatcher
         if (!invalidSessionReason.IsNullOrWhiteSpace())
         {
             invalidSessionReason = invalidSessionReason.TrimEnd(',', ' ');
+            ClassicMoonsHQModule.Logger.LogWarning($"WARNING! Modpack misconfiguration: {invalidSessionReason}");
             if (MenuNotif3 != null)
             {
                 MenuNotif3(__instance, $"WARNING! Modpack misconfiguration: {invalidSessionReason}", "[ OK ]", true);
@@ -105,25 +94,37 @@ internal class MenuManagerPatcher
             {
                 ClassicMoonsHQModule.Logger.LogError("Displaying menu notification failed.");
             }
-            ClassicMoonsHQModule.Logger.LogWarning($"WARNING! Modpack misconfiguration: {invalidSessionReason}");
         }
     }
 
-    internal static string CheckModValidity(Dictionary<string, string> dict, bool required)
+    internal static string CheckModValidity(Dictionary<string, Version> dict, bool required)
     {
         string invalidSessionReason = "";
-        foreach (KeyValuePair<string, string> entry in dict)
+        foreach (KeyValuePair<string, Version> entry in dict)
         {
             if (!ClassicMoonsHQModule.pluginInfos.ContainsKey(entry.Key))
             {
                 if (required) invalidSessionReason += $"{entry.Key} v{entry.Value} is misssing, ";
                 continue;
             }
-            else if (ClassicMoonsHQModule.pluginInfos[entry.Key].Metadata.Version.ToString() != entry.Value)
+            else if (ClassicMoonsHQModule.pluginInfos[entry.Key].Metadata.Version != entry.Value)
             {
+                if (!required && ClassicMoonsHQModule.pluginInfos[entry.Key].Metadata.Version <= entry.Value)
+                {
+                    continue;
+                }
                 invalidSessionReason += $"{ClassicMoonsHQModule.pluginInfos[entry.Key].Metadata.GUID} v{ClassicMoonsHQModule.pluginInfos[entry.Key].Metadata.Version.ToString()} didnt match required version v{entry.Value}, ";
             }
         }
         return invalidSessionReason;
+    }
+
+    internal static string CheckForBannedMods(string[] names)
+    {
+        foreach (string s in names)
+        {
+            if (ClassicMoonsHQModule.pluginInfos.ContainsKey(s)) return "Invalid mods found - please reinstall the pack, ";
+        }
+        return "";
     }
 }
